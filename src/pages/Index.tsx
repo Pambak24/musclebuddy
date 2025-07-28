@@ -40,8 +40,8 @@ const Index = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
             <div>
-              <h1 className="text-2xl font-bold">PhysioTracker</h1>
-              <p className="text-muted-foreground">Professional Therapy Services</p>
+              <h1 className="text-2xl font-bold">Muscle Buddy</h1>
+              <p className="text-muted-foreground">Recovery & Wellness App</p>
             </div>
             <div className="flex items-center gap-4">
               {user && (
@@ -59,7 +59,7 @@ const Index = () => {
                   </Button>
                 </>
               )}
-              <span className="text-sm text-muted-foreground">Physical Therapy App</span>
+              <span className="text-sm text-muted-foreground">Recovery App</span>
             </div>
           </div>
         </div>
@@ -68,9 +68,9 @@ const Index = () => {
       {/* Hero Section */}
       <div className="container mx-auto px-4 py-16">
         <div className="text-center mb-16">
-          <h1 className="text-5xl font-bold mb-6">Professional Therapy Services</h1>
+          <h1 className="text-5xl font-bold mb-6">Professional Recovery Services</h1>
           <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Comprehensive therapeutic treatments designed to help you achieve optimal physical wellness and recovery.
+            Comprehensive recovery treatments designed to help you achieve optimal physical wellness and muscle recovery.
           </p>
           <div className="flex justify-center gap-4 mb-8">
             <Badge variant="secondary" className="text-lg px-4 py-2">
@@ -105,7 +105,7 @@ const Index = () => {
 
         {/* Services Grid */}
         <div className="mb-16">
-          <h2 className="text-3xl font-bold text-center mb-12">Treatment Modalities</h2>
+          <h2 className="text-3xl font-bold text-center mb-12">Recovery Modalities</h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {services.map((service, index) => (
               <Card key={index} className="h-full">
@@ -126,8 +126,8 @@ const Index = () => {
           <div className="text-6xl font-bold text-primary mb-2">$150</div>
           <p className="text-xl text-muted-foreground mb-4">per 1-hour session</p>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            All treatments are included in your session. We'll work together to determine the best combination 
-            of therapies for your specific needs and goals.
+            All recovery treatments are included in your session. We'll work together to determine the best combination 
+            of therapies for your specific recovery needs and goals.
           </p>
         </div>
       </div>

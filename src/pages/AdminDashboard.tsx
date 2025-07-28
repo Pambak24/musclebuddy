@@ -165,7 +165,7 @@ const AdminDashboard = () => {
           <div className="flex justify-between items-center py-6">
             <div>
               <h1 className="text-2xl font-bold">Admin Dashboard</h1>
-              <p className="text-muted-foreground">PhysioTracker Management</p>
+              <p className="text-muted-foreground">Muscle Buddy Management</p>
             </div>
             <div className="flex items-center gap-4">
               <Link to="/">
