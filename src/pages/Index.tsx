@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Clock, User, Target, LogOut } from "lucide-react";
+import { Link } from "react-router-dom";
 import { useAuth } from "@/components/AuthProvider";
 import { LoginForm } from "@/components/LoginForm";
 import { supabase } from "@/lib/supabase";
@@ -66,18 +67,24 @@ const Index = () => {
             </Badge>
           </div>
           <div className="flex flex-wrap justify-center gap-4">
-            <Button size="lg" className="flex items-center gap-2" onClick={() => window.location.href = '/schedule'}>
-              <Calendar className="w-5 h-5" />
-              Schedule Appointment
-            </Button>
-            <Button variant="outline" size="lg" className="flex items-center gap-2" onClick={() => window.location.href = '/intake'}>
-              <User className="w-5 h-5" />
-              Client Intake Form
-            </Button>
-            <Button variant="outline" size="lg" className="flex items-center gap-2" onClick={() => window.location.href = '/exercises'}>
-              <Target className="w-5 h-5" />
-              My Exercises
-            </Button>
+            <Link to="/schedule">
+              <Button size="lg" className="flex items-center gap-2">
+                <Calendar className="w-5 h-5" />
+                Schedule Appointment
+              </Button>
+            </Link>
+            <Link to="/intake">
+              <Button variant="outline" size="lg" className="flex items-center gap-2">
+                <User className="w-5 h-5" />
+                Client Intake Form
+              </Button>
+            </Link>
+            <Link to="/exercises">
+              <Button variant="outline" size="lg" className="flex items-center gap-2">
+                <Target className="w-5 h-5" />
+                My Exercises
+              </Button>
+            </Link>
           </div>
         </div>
 
