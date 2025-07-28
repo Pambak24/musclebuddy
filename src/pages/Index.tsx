@@ -38,7 +38,7 @@ const Index = () => {
               <Calendar className="w-5 h-5" />
               Schedule Appointment
             </Button>
-            <Button variant="outline" size="lg" className="flex items-center gap-2">
+            <Button variant="outline" size="lg" className="flex items-center gap-2" onClick={() => window.location.href = '/intake'}>
               <User className="w-5 h-5" />
               Client Intake Form
             </Button>
