@@ -5,7 +5,7 @@ import { Calendar, Clock, User, Target, LogOut } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/components/AuthProvider";
 import { LoginForm } from "@/components/LoginForm";
-import { supabase } from "@/lib/supabase";
+import { supabase } from "@/integrations/supabase/client";
 
 const Index = () => {
   const { user, loading, isAdmin } = useAuth();
@@ -29,6 +29,40 @@ const Index = () => {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-foreground">Loading...</div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-background">
+        {/* Header */}
+        <header className="bg-card text-card-foreground shadow-sm border-b">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between items-center py-6">
+              <div>
+                <h1 className="text-2xl font-bold">Muscle Buddy</h1>
+                <p className="text-muted-foreground">Recovery & Wellness App</p>
+              </div>
+              <div className="flex items-center gap-4">
+                <span className="text-sm text-muted-foreground">Recovery App</span>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        {/* Login Section */}
+        <div className="container mx-auto px-4 py-16">
+          <div className="text-center mb-8">
+            <h1 className="text-4xl font-bold mb-4">Welcome to Muscle Buddy</h1>
+            <p className="text-xl text-muted-foreground mb-8">
+              Sign in to access your recovery and wellness dashboard
+            </p>
+          </div>
+          <div className="max-w-md mx-auto">
+            <LoginForm />
+          </div>
+        </div>
       </div>
     );
   }
