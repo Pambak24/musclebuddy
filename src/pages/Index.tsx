@@ -34,7 +34,7 @@ const Index = () => {
             </Badge>
           </div>
           <div className="flex flex-wrap justify-center gap-4">
-            <Button size="lg" className="flex items-center gap-2">
+            <Button size="lg" className="flex items-center gap-2" onClick={() => window.location.href = '/schedule'}>
               <Calendar className="w-5 h-5" />
               Schedule Appointment
             </Button>
@@ -42,7 +42,7 @@ const Index = () => {
               <User className="w-5 h-5" />
               Client Intake Form
             </Button>
-            <Button variant="outline" size="lg" className="flex items-center gap-2">
+            <Button variant="outline" size="lg" className="flex items-center gap-2" onClick={() => window.location.href = '/exercises'}>
               <Target className="w-5 h-5" />
               My Exercises
             </Button>
