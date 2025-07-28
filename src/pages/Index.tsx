@@ -8,7 +8,7 @@ import { LoginForm } from "@/components/LoginForm";
 import { supabase } from "@/lib/supabase";
 
 const Index = () => {
-  const { user, loading } = useAuth();
+  const { user, loading, isAdmin } = useAuth();
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -44,6 +44,21 @@ const Index = () => {
               <p className="text-muted-foreground">Professional Therapy Services</p>
             </div>
             <div className="flex items-center gap-4">
+              {user && (
+                <>
+                  {isAdmin && (
+                    <Link to="/admin">
+                      <Button variant="outline" size="sm">
+                        Admin Dashboard
+                      </Button>
+                    </Link>
+                  )}
+                  <Button variant="ghost" size="sm" onClick={handleSignOut}>
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Sign Out
+                  </Button>
+                </>
+              )}
               <span className="text-sm text-muted-foreground">Physical Therapy App</span>
             </div>
           </div>

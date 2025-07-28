@@ -9,6 +9,7 @@ import ClientIntake from "./pages/ClientIntake";
 import Schedule from "./pages/Schedule";
 import Exercises from "./pages/Exercises";
 import ExercisePlanGenerator from "./pages/ExercisePlanGenerator";
+import AdminDashboard from "./pages/AdminDashboard";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,6 +27,7 @@ const App = () => (
             <Route path="/schedule" element={<Schedule />} />
             <Route path="/exercises" element={<Exercises />} />
             <Route path="/exercise-plan-generator" element={<ExercisePlanGenerator />} />
+            <Route path="/admin" element={<AdminDashboard />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
