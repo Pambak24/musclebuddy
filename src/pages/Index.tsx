@@ -32,14 +32,6 @@ const Index = () => {
     );
   }
 
-  if (!user) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center p-4">
-        <LoginForm />
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -51,11 +43,7 @@ const Index = () => {
               <p className="text-muted-foreground">Professional Therapy Services</p>
             </div>
             <div className="flex items-center gap-4">
-              <span className="text-sm text-muted-foreground">Welcome, {user.email}</span>
-              <Button variant="outline" size="sm" onClick={handleSignOut}>
-                <LogOut className="h-4 w-4 mr-2" />
-                Sign Out
-              </Button>
+              <span className="text-sm text-muted-foreground">Physical Therapy App</span>
             </div>
           </div>
         </div>
