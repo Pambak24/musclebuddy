@@ -1,0 +1,40 @@
+{
+  "name": "Muscle Buddy - AI Recovery & Wellness",
+  "short_name": "Muscle Buddy",
+  "description": "Professional AI-powered recovery services with instant medical analysis, posture assessment, and personalized exercise plans.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0ea5e9",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
+  ],
+  "categories": ["health", "medical", "fitness", "lifestyle"],
+  "screenshots": [
+    {
+      "src": "screenshot-1.png",
+      "sizes": "1170x2532",
+      "type": "image/png",
+      "platform": "ios"
+    },
+    {
+      "src": "screenshot-2.png", 
+      "sizes": "1080x2340",
+      "type": "image/png",
+      "platform": "android"
+    }
+  ]
+}
