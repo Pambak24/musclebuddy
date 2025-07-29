@@ -57,7 +57,8 @@ const ExercisePlanGenerator = () => {
     setIsGenerating(true);
 
     try {
-      const { data, error } = await supabase.functions.invoke('generate-exercise-plan', {
+      // Temporary: Use test function to verify system works
+      const { data, error } = await supabase.functions.invoke('test-exercise-plan', {
         body: { clientData }
       });
 
