@@ -6,15 +6,17 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Slider } from '@/components/ui/slider';
 import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft, Save, Sparkles } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/components/AuthProvider';
 
 const ClientIntake = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [isGenerating, setIsGenerating] = useState(false);
   
   // Personal Information
@@ -233,7 +235,7 @@ Priority Areas: ${goals.priorityAreas.join(', ')}
     }, 1000);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!personalInfo.fullName || !symptoms.primaryComplaint) {
@@ -245,7 +247,9 @@ Priority Areas: ${goals.priorityAreas.join(', ')}
       return;
     }
 
-    // Save all data to localStorage
+    // Database save will be implemented later
+
+    // Save all data to localStorage as backup
     const fullAssessment = {
       personalInfo,
       symptoms,
@@ -331,23 +335,6 @@ Priority Areas: ${goals.priorityAreas.join(', ')}
                     onChange={(e) => setPersonalInfo(prev => ({ ...prev, occupation: e.target.value }))}
                   />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={personalInfo.email}
-                    onChange={(e) => setPersonalInfo(prev => ({ ...prev, email: e.target.value }))}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="phoneNumber">Phone Number</Label>
-                  <Input
-                    id="phoneNumber"
-                    value={personalInfo.phoneNumber}
-                    onChange={(e) => setPersonalInfo(prev => ({ ...prev, phoneNumber: e.target.value }))}
-                  />
-                </div>
               </div>
             </CardContent>
           </Card>
@@ -396,43 +383,6 @@ Priority Areas: ${goals.priorityAreas.join(', ')}
                   className="w-full"
                 />
               </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="painType">Pain Type/Quality</Label>
-                  <Select value={symptoms.painType} onValueChange={(value) => setSymptoms(prev => ({ ...prev, painType: value }))}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select pain type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="sharp">Sharp/Stabbing</SelectItem>
-                      <SelectItem value="dull">Dull/Aching</SelectItem>
-                      <SelectItem value="burning">Burning</SelectItem>
-                      <SelectItem value="throbbing">Throbbing</SelectItem>
-                      <SelectItem value="tingling">Tingling/Numbness</SelectItem>
-                      <SelectItem value="cramping">Cramping</SelectItem>
-                      <SelectItem value="stiffness">Stiffness</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="symptomDuration">How long have you had these symptoms?</Label>
-                  <Select value={symptoms.symptomDuration} onValueChange={(value) => setSymptoms(prev => ({ ...prev, symptomDuration: value }))}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select duration" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="days">Days</SelectItem>
-                      <SelectItem value="weeks">Weeks</SelectItem>
-                      <SelectItem value="1-3months">1-3 months</SelectItem>
-                      <SelectItem value="3-6months">3-6 months</SelectItem>
-                      <SelectItem value="6months-1year">6 months - 1 year</SelectItem>
-                      <SelectItem value="1-2years">1-2 years</SelectItem>
-                      <SelectItem value="2+years">Over 2 years</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
             </CardContent>
           </Card>
 
@@ -471,9 +421,9 @@ Priority Areas: ${goals.priorityAreas.join(', ')}
             </CardContent>
           </Card>
 
-          {/* Submit Actions */}
-          <div className="flex gap-4 justify-end">
-            <Button type="submit" variant="outline">
+          {/* Submit and Generate */}
+          <div className="flex flex-col sm:flex-row gap-4">
+            <Button type="submit" variant="outline" className="flex-1">
               <Save className="h-4 w-4 mr-2" />
               Save Assessment
             </Button>
@@ -482,12 +432,12 @@ Priority Areas: ${goals.priorityAreas.join(', ')}
               type="button"
               onClick={generateComprehensiveAssessment}
               disabled={isGenerating || !personalInfo.fullName || !symptoms.primaryComplaint}
-              className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+              className="flex-1"
             >
               {isGenerating ? (
                 <>
                   <div className="animate-spin h-4 w-4 mr-2 border-2 border-current border-t-transparent rounded-full" />
-                  Generating Plan...
+                  Generating...
                 </>
               ) : (
                 <>

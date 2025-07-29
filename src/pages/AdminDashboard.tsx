@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Users, Calendar, Activity, Settings, Search, UserPlus } from "lucide-react";
-import { supabase } from "@/lib/supabase";
+import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/components/AuthProvider";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
@@ -31,11 +31,8 @@ const AdminDashboard = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   const [profiles, setProfiles] = useState<Profile[]>([]);
-  const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [roleFilter, setRoleFilter] = useState<string>("all");
-  const [newUserEmail, setNewUserEmail] = useState("");
-  const [newUserRole, setNewUserRole] = useState<"client" | "trainer">("client");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -52,19 +49,6 @@ const AdminDashboard = () => {
 
       if (profilesError) throw profilesError;
       setProfiles(profilesData || []);
-
-      // Fetch recent appointments with client info
-      const { data: appointmentsData, error: appointmentsError } = await supabase
-        .from('appointments')
-        .select(`
-          *,
-          client:profiles!appointments_client_id_fkey(*)
-        `)
-        .order('scheduled_date', { ascending: false })
-        .limit(10);
-
-      if (appointmentsError) throw appointmentsError;
-      setAppointments(appointmentsData || []);
     } catch (error) {
       console.error('Error fetching data:', error);
       toast({
@@ -77,38 +61,6 @@ const AdminDashboard = () => {
     }
   };
 
-  const inviteUser = async () => {
-    if (!newUserEmail) return;
-
-    try {
-      // In a real implementation, you'd send an invitation email
-      // For now, we'll create a profile entry
-      const { error } = await supabase
-        .from('profiles')
-        .insert({
-          id: crypto.randomUUID(),
-          email: newUserEmail,
-          role: newUserRole,
-        });
-
-      if (error) throw error;
-
-      toast({
-        title: "Success",
-        description: `Invitation sent to ${newUserEmail}`,
-      });
-      
-      setNewUserEmail("");
-      fetchData();
-    } catch (error) {
-      console.error('Error inviting user:', error);
-      toast({
-        title: "Error",
-        description: "Failed to invite user",
-        variant: "destructive",
-      });
-    }
-  };
 
   const updateUserRole = async (userId: string, newRole: 'admin' | 'trainer' | 'client') => {
     try {
@@ -145,10 +97,8 @@ const AdminDashboard = () => {
   const stats = {
     totalClients: profiles.filter(p => p.role === 'client').length,
     totalTrainers: profiles.filter(p => p.role === 'trainer').length,
-    todayAppointments: appointments.filter(a => 
-      new Date(a.scheduled_date).toDateString() === new Date().toDateString()
-    ).length,
-    totalAppointments: appointments.length,
+    totalAdmins: profiles.filter(p => p.role === 'admin').length,
+    totalUsers: profiles.length,
   };
 
   if (loading) {
@@ -202,59 +152,25 @@ const AdminDashboard = () => {
           
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Today's Appointments</CardTitle>
-              <Calendar className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-sm font-medium">Admins</CardTitle>
+              <Settings className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stats.todayAppointments}</div>
+              <div className="text-2xl font-bold">{stats.totalAdmins}</div>
             </CardContent>
           </Card>
           
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Appointments</CardTitle>
-              <Settings className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-sm font-medium">Total Users</CardTitle>
+              <Users className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stats.totalAppointments}</div>
+              <div className="text-2xl font-bold">{stats.totalUsers}</div>
             </CardContent>
           </Card>
         </div>
 
-        {/* Invite New User */}
-        <Card className="mb-8">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <UserPlus className="h-5 w-5" />
-              Invite New User
-            </CardTitle>
-            <CardDescription>
-              Add new clients or trainers to the platform
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex gap-4">
-              <Input
-                placeholder="Email address"
-                value={newUserEmail}
-                onChange={(e) => setNewUserEmail(e.target.value)}
-                type="email"
-              />
-              <Select value={newUserRole} onValueChange={(value: "client" | "trainer") => setNewUserRole(value)}>
-                <SelectTrigger className="w-40">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="client">Client</SelectItem>
-                  <SelectItem value="trainer">Trainer</SelectItem>
-                </SelectContent>
-              </Select>
-              <Button onClick={inviteUser} disabled={!newUserEmail}>
-                Send Invite
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
 
         {/* User Management */}
         <Card>

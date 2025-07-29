@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft, Brain, Save } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/components/AuthProvider';
 
 interface ExercisePlan {
   overview: string;
@@ -29,19 +30,16 @@ interface ExercisePlan {
 
 const ExercisePlanGenerator = () => {
   const { toast } = useToast();
-  const [apiKey, setApiKey] = useState(localStorage.getItem('openai_api_key') || '');
+  const { user } = useAuth();
   const [clientData, setClientData] = useState(localStorage.getItem('client_assessment') || '');
   const [isGenerating, setIsGenerating] = useState(false);
   const [exercisePlan, setExercisePlan] = useState<ExercisePlan | null>(null);
 
   const generateExercisePlan = async () => {
-    console.log('Generate button clicked!', { apiKey: apiKey ? 'present' : 'missing', clientDataLength: clientData.length });
-    
-    if (!apiKey) {
-      console.log('Missing API key');
+    if (!user) {
       toast({
-        title: 'API Key Required',
-        description: 'Please enter your OpenAI API key to generate exercise plans.',
+        title: 'Authentication Required',
+        description: 'Please log in to generate exercise plans.',
         variant: 'destructive',
       });
       return;
@@ -57,76 +55,29 @@ const ExercisePlanGenerator = () => {
     }
 
     setIsGenerating(true);
-    localStorage.setItem('openai_api_key', apiKey);
 
     try {
-      const response = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${apiKey}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          model: 'gpt-4o-mini',
-          messages: [
-            {
-              role: 'system',
-              content: `You are an expert physical therapist with 20+ years of experience. Create comprehensive, evidence-based exercise plans that address:
-
-1. Root cause analysis of movement dysfunctions
-2. Compensation patterns and their corrections
-3. Progressive exercise phases
-4. Specific sets, reps, frequency, and progression
-5. Precautions and modifications
-6. Timeline expectations
-
-Consider biomechanics, pain science, tissue healing timelines, and functional goals. Address the entire kinetic chain, not just symptomatic areas.
-
-Respond ONLY with valid JSON in this exact format:
-{
-  "overview": "Brief analysis of the client's condition and approach",
-  "phases": [
-    {
-      "name": "Phase name (e.g., Acute Management)",
-      "duration": "Timeline",
-      "goals": ["Goal 1", "Goal 2"],
-      "exercises": [
-        {
-          "name": "Exercise name",
-          "description": "Detailed technique description",
-          "sets": "Number of sets",
-          "reps": "Number of reps or duration",
-          "frequency": "How often per day/week",
-          "progression": "How to advance this exercise"
-        }
-      ]
-    }
-  ],
-  "precautions": ["Important safety considerations"],
-  "progressionNotes": "Overall progression strategy and timeline"
-}`
-            },
-            {
-              role: 'user',
-              content: `Create a personalized exercise plan for this client:
-
-${clientData}
-
-Focus on correcting compensation patterns, addressing root causes, and progressive functional restoration.`
-            }
-          ],
-          temperature: 0.3,
-          max_tokens: 2000,
-        }),
+      const { data, error } = await supabase.functions.invoke('generate-exercise-plan', {
+        body: { clientData }
       });
 
-      if (!response.ok) {
-        throw new Error(`API request failed: ${response.status}`);
+      if (error) {
+        throw new Error(error.message);
       }
 
-      const data = await response.json();
-      const plan = JSON.parse(data.choices[0].message.content);
-      setExercisePlan(plan);
+      if (!data || !data.exercisePlan) {
+        throw new Error('Invalid response from server');
+      }
+
+      setExercisePlan(data.exercisePlan);
+      
+      // Save plan data locally since we haven't created the exercise_plans table yet
+      localStorage.setItem('latest_exercise_plan', JSON.stringify({
+        plan: data.exercisePlan,
+        createdAt: new Date().toISOString(),
+        clientData: clientData.substring(0, 100) + '...'
+      }));
+
       
       toast({
         title: 'Exercise Plan Generated!',
@@ -136,7 +87,7 @@ Focus on correcting compensation patterns, addressing root causes, and progressi
       console.error('Error generating plan:', error);
       toast({
         title: 'Generation Failed',
-        description: error.message || 'Failed to generate exercise plan. Please check your API key and try again.',
+        description: error.message || 'Failed to generate exercise plan. Please try again.',
         variant: 'destructive',
       });
     } finally {
@@ -145,22 +96,22 @@ Focus on correcting compensation patterns, addressing root causes, and progressi
   };
 
   const savePlan = () => {
-    if (exercisePlan) {
-      const plans = JSON.parse(localStorage.getItem('exercise_plans') || '[]');
-      const newPlan = {
-        id: Date.now(),
-        createdAt: new Date().toISOString(),
-        plan: exercisePlan,
-        clientData: clientData.substring(0, 100) + '...'
-      };
-      plans.push(newPlan);
-      localStorage.setItem('exercise_plans', JSON.stringify(plans));
-      
-      toast({
-        title: 'Plan Saved!',
-        description: 'Exercise plan has been saved successfully.',
-      });
-    }
+    if (!exercisePlan) return;
+
+    const plans = JSON.parse(localStorage.getItem('exercise_plans') || '[]');
+    const newPlan = {
+      id: Date.now(),
+      createdAt: new Date().toISOString(),
+      plan: exercisePlan,
+      clientData: clientData.substring(0, 100) + '...'
+    };
+    plans.push(newPlan);
+    localStorage.setItem('exercise_plans', JSON.stringify(plans));
+    
+    toast({
+      title: 'Plan Saved!',
+      description: 'Exercise plan has been saved locally.',
+    });
   };
 
   return (
@@ -180,37 +131,6 @@ Focus on correcting compensation patterns, addressing root causes, and progressi
         </div>
 
         <div className="grid gap-6">
-          {/* API Key Setup */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Brain className="h-5 w-5" />
-                AI Configuration
-              </CardTitle>
-              <CardDescription>
-                Enter your OpenAI API key to enable AI-powered exercise plan generation
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                <Label htmlFor="apiKey">OpenAI API Key</Label>
-                <Input
-                  id="apiKey"
-                  type="password"
-                  placeholder="sk-..."
-                  value={apiKey}
-                  onChange={(e) => setApiKey(e.target.value)}
-                  className="font-mono"
-                />
-                <p className="text-sm text-muted-foreground">
-                  Your API key is stored locally and never sent to our servers. Get your key from{' '}
-                  <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
-                    OpenAI Dashboard
-                  </a>
-                </p>
-              </div>
-            </CardContent>
-          </Card>
 
           {/* Client Assessment Data */}
           <Card>
@@ -248,7 +168,7 @@ The more detailed the information, the better the AI can create a personalized p
           <div className="flex gap-4">
             <Button 
               onClick={generateExercisePlan} 
-              disabled={isGenerating || !apiKey || !clientData.trim()}
+              disabled={isGenerating || !clientData.trim() || !user}
               className="flex-1"
             >
               {isGenerating ? (
