@@ -15,16 +15,20 @@ serve(async (req) => {
   }
 
   try {
+    console.log('Function called, API key present:', !!openAIApiKey);
     const { clientData } = await req.json();
 
     if (!openAIApiKey) {
+      console.error('OpenAI API key not found in environment variables');
       throw new Error('OpenAI API key not configured');
     }
 
     if (!clientData) {
+      console.error('No client data provided');
       throw new Error('Client assessment data is required');
     }
 
+    console.log('Making request to OpenAI API...');
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -32,7 +36,7 @@ serve(async (req) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4.1-2025-04-14',
+        model: 'gpt-4o-mini',
         messages: [
           {
             role: 'system',
