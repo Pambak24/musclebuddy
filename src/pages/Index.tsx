@@ -115,26 +115,32 @@ const Index = () => {
               $150 per Visit
             </Badge>
           </div>
-          <div className="flex flex-wrap justify-center gap-4">
-            <Link to="/schedule">
-              <Button size="lg" className="flex items-center gap-2">
-                <Calendar className="w-5 h-5" />
-                Schedule Appointment
-              </Button>
-            </Link>
-            <Link to="/intake">
-              <Button variant="outline" size="lg" className="flex items-center gap-2">
-                <User className="w-5 h-5" />
-                Client Intake Form
-              </Button>
-            </Link>
-            <Link to="/exercises">
-              <Button variant="outline" size="lg" className="flex items-center gap-2">
-                <Target className="w-5 h-5" />
-                My Exercises
-              </Button>
-            </Link>
-          </div>
+                  <div className="flex flex-wrap justify-center gap-4">
+                    <Link to="/schedule">
+                      <Button size="lg" className="flex items-center gap-2">
+                        <Calendar className="w-5 h-5" />
+                        Schedule Appointment
+                      </Button>
+                    </Link>
+                    <Link to="/intake">
+                      <Button variant="outline" size="lg" className="flex items-center gap-2">
+                        <User className="w-5 h-5" />
+                        Client Intake Form
+                      </Button>
+                    </Link>
+                    <Link to="/exercises">
+                      <Button variant="outline" size="lg" className="flex items-center gap-2">
+                        <Target className="w-5 h-5" />
+                        My Exercises
+                      </Button>
+                    </Link>
+                    <Link to="/exercise-plan-generator">
+                      <Button>Generate Plan</Button>
+                    </Link>
+                    <Link to="/examination">
+                      <Button variant="outline">AI Examination</Button>
+                    </Link>
+                  </div>
         </div>
 
         {/* Services Grid */}

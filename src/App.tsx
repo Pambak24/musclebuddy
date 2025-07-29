@@ -11,6 +11,7 @@ import ClientIntake from "./pages/ClientIntake";
 import Schedule from "./pages/Schedule";
 import Exercises from "./pages/Exercises";
 import ExercisePlanGenerator from "./pages/ExercisePlanGenerator";
+import Examination from "./pages/Examination";
 import AdminDashboard from "./pages/AdminDashboard";
 import NotFound from "./pages/NotFound";
 
@@ -48,6 +49,11 @@ const App = () => (
             <Route path="/exercise-plan-generator" element={
               <ProtectedRoute>
                 <ExercisePlanGenerator />
+              </ProtectedRoute>
+            } />
+            <Route path="/examination" element={
+              <ProtectedRoute>
+                <Examination />
               </ProtectedRoute>
             } />
             <Route path="/admin" element={
