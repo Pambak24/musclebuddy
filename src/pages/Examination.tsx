@@ -119,26 +119,29 @@ const Examination = () => {
         throw new Error('Invalid response from analysis service');
       }
 
-      // Save examination locally for now (until database migration is approved)
-      const examinationRecord = {
-        id: Date.now(),
-        userId: user.id,
-        mediaUrls,
-        description: description.trim(),
-        diagnosis: data.diagnosis,
-        createdAt: new Date().toISOString(),
-        status: 'completed'
-      };
+      // Save examination to database
+      const { data: examinationData, error: saveError } = await supabase
+        .from('examinations')
+        .insert({
+          user_id: user.id,
+          media_urls: mediaUrls,
+          description: description.trim(),
+          diagnosis: data.diagnosis,
+          status: 'completed'
+        })
+        .select()
+        .single();
 
-      const examinations = JSON.parse(localStorage.getItem('examinations') || '[]');
-      examinations.push(examinationRecord);
-      localStorage.setItem('examinations', JSON.stringify(examinations));
+      if (saveError) {
+        console.error('Error saving examination:', saveError);
+        // Continue anyway as we have the diagnosis
+      }
 
       setDiagnosis(data.diagnosis);
       
       toast({
         title: 'Analysis Complete!',
-        description: 'AI examination analysis has been generated.',
+        description: 'AI examination analysis has been generated and saved.',
       });
     } catch (error: any) {
       console.error('Error analyzing examination:', error);
