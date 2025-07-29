@@ -173,11 +173,52 @@ const Examination = () => {
           </Link>
           <div>
             <h1 className="text-3xl font-bold">AI Medical Examination</h1>
-            <p className="text-muted-foreground">Upload photos/videos for AI-powered diagnosis and gait analysis</p>
+            <p className="text-muted-foreground">Upload photos/videos for AI-powered diagnosis, gait analysis, and posture assessment</p>
           </div>
         </div>
 
         <div className="grid gap-6">
+          {/* Posture Analysis Instructions */}
+          <Card>
+            <CardHeader>
+              <CardTitle>📋 Posture Analysis Instructions</CardTitle>
+              <CardDescription>
+                Follow these steps for accurate posture assessment
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="space-y-3">
+                    <h4 className="font-semibold text-sm">📸 Photo Guidelines:</h4>
+                    <ul className="text-sm text-muted-foreground space-y-2">
+                      <li>• <strong>Front view:</strong> Stand facing camera, feet hip-width apart</li>
+                      <li>• <strong>Side view:</strong> Stand sideways to camera, arms relaxed</li>
+                      <li>• <strong>Back view:</strong> Stand with back to camera</li>
+                      <li>• <strong>Lighting:</strong> Ensure good, even lighting</li>
+                      <li>• <strong>Clothing:</strong> Wear form-fitting clothes or minimal clothing</li>
+                    </ul>
+                  </div>
+                  <div className="space-y-3">
+                    <h4 className="font-semibold text-sm">🎥 Video Guidelines:</h4>
+                    <ul className="text-sm text-muted-foreground space-y-2">
+                      <li>• <strong>Walking:</strong> Walk naturally for 10-15 steps</li>
+                      <li>• <strong>Standing:</strong> Show normal standing posture</li>
+                      <li>• <strong>Sitting:</strong> Demonstrate sitting posture</li>
+                      <li>• <strong>Movements:</strong> Show any problem areas</li>
+                      <li>• <strong>Duration:</strong> 30-60 seconds per activity</li>
+                    </ul>
+                  </div>
+                </div>
+                <div className="bg-blue-50 p-3 rounded-lg border border-blue-200">
+                  <p className="text-sm text-blue-800">
+                    <strong>Pro Tip:</strong> For best results, include all three views (front, side, back) and any walking/movement videos. The AI will analyze your alignment, muscle imbalances, and provide corrective recommendations.
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
           {/* File Upload */}
           <Card>
             <CardHeader>
