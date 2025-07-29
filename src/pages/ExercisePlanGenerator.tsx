@@ -35,7 +35,10 @@ const ExercisePlanGenerator = () => {
   const [exercisePlan, setExercisePlan] = useState<ExercisePlan | null>(null);
 
   const generateExercisePlan = async () => {
+    console.log('Generate button clicked!', { apiKey: apiKey ? 'present' : 'missing', clientDataLength: clientData.length });
+    
     if (!apiKey) {
+      console.log('Missing API key');
       toast({
         title: 'API Key Required',
         description: 'Please enter your OpenAI API key to generate exercise plans.',
