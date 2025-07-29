@@ -13,9 +13,10 @@ import { Link } from "react-router-dom";
 
 interface Profile {
   id: string;
+  user_id: string;
   email: string;
   full_name: string | null;
-  role: 'client' | 'therapist';
+  role: 'admin' | 'trainer' | 'client';
   created_at: string;
 }
 
@@ -34,7 +35,7 @@ const AdminDashboard = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [roleFilter, setRoleFilter] = useState<string>("all");
   const [newUserEmail, setNewUserEmail] = useState("");
-  const [newUserRole, setNewUserRole] = useState<"client" | "therapist">("client");
+  const [newUserRole, setNewUserRole] = useState<"client" | "trainer">("client");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -109,12 +110,12 @@ const AdminDashboard = () => {
     }
   };
 
-  const updateUserRole = async (userId: string, newRole: 'client' | 'therapist') => {
+  const updateUserRole = async (userId: string, newRole: 'admin' | 'trainer' | 'client') => {
     try {
       const { error } = await supabase
         .from('profiles')
         .update({ role: newRole })
-        .eq('id', userId);
+        .eq('user_id', userId);
 
       if (error) throw error;
 
@@ -143,7 +144,7 @@ const AdminDashboard = () => {
 
   const stats = {
     totalClients: profiles.filter(p => p.role === 'client').length,
-    totalTherapists: profiles.filter(p => p.role === 'therapist').length,
+    totalTrainers: profiles.filter(p => p.role === 'trainer').length,
     todayAppointments: appointments.filter(a => 
       new Date(a.scheduled_date).toDateString() === new Date().toDateString()
     ).length,
@@ -191,11 +192,11 @@ const AdminDashboard = () => {
           
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Therapists</CardTitle>
+              <CardTitle className="text-sm font-medium">Trainers</CardTitle>
               <Activity className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stats.totalTherapists}</div>
+              <div className="text-2xl font-bold">{stats.totalTrainers}</div>
             </CardContent>
           </Card>
           
@@ -228,7 +229,7 @@ const AdminDashboard = () => {
               Invite New User
             </CardTitle>
             <CardDescription>
-              Add new clients or therapists to the platform
+              Add new clients or trainers to the platform
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -239,13 +240,13 @@ const AdminDashboard = () => {
                 onChange={(e) => setNewUserEmail(e.target.value)}
                 type="email"
               />
-              <Select value={newUserRole} onValueChange={(value: "client" | "therapist") => setNewUserRole(value)}>
+              <Select value={newUserRole} onValueChange={(value: "client" | "trainer") => setNewUserRole(value)}>
                 <SelectTrigger className="w-40">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="client">Client</SelectItem>
-                  <SelectItem value="therapist">Therapist</SelectItem>
+                  <SelectItem value="trainer">Trainer</SelectItem>
                 </SelectContent>
               </Select>
               <Button onClick={inviteUser} disabled={!newUserEmail}>
@@ -279,7 +280,8 @@ const AdminDashboard = () => {
                 <SelectContent>
                   <SelectItem value="all">All Roles</SelectItem>
                   <SelectItem value="client">Clients</SelectItem>
-                  <SelectItem value="therapist">Therapists</SelectItem>
+                  <SelectItem value="trainer">Trainers</SelectItem>
+                  <SelectItem value="admin">Admins</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -301,7 +303,7 @@ const AdminDashboard = () => {
                     <TableCell>{profile.full_name || "No name set"}</TableCell>
                     <TableCell>{profile.email}</TableCell>
                     <TableCell>
-                      <Badge variant={profile.role === 'therapist' ? 'default' : 'secondary'}>
+                      <Badge variant={profile.role === 'admin' ? 'destructive' : profile.role === 'trainer' ? 'default' : 'secondary'}>
                         {profile.role}
                       </Badge>
                     </TableCell>
@@ -311,14 +313,15 @@ const AdminDashboard = () => {
                     <TableCell>
                       <Select
                         value={profile.role}
-                        onValueChange={(value: 'client' | 'therapist') => updateUserRole(profile.id, value)}
+                        onValueChange={(value: 'admin' | 'trainer' | 'client') => updateUserRole(profile.user_id, value)}
                       >
                         <SelectTrigger className="w-32">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="client">Client</SelectItem>
-                          <SelectItem value="therapist">Therapist</SelectItem>
+                          <SelectItem value="trainer">Trainer</SelectItem>
+                          <SelectItem value="admin">Admin</SelectItem>
                         </SelectContent>
                       </Select>
                     </TableCell>

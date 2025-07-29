@@ -4,7 +4,9 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/components/AuthProvider";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
+import Auth from "./pages/Auth";
 import ClientIntake from "./pages/ClientIntake";
 import Schedule from "./pages/Schedule";
 import Exercises from "./pages/Exercises";
@@ -22,12 +24,37 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/intake" element={<ClientIntake />} />
-            <Route path="/schedule" element={<Schedule />} />
-            <Route path="/exercises" element={<Exercises />} />
-            <Route path="/exercise-plan-generator" element={<ExercisePlanGenerator />} />
-            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/auth" element={<Auth />} />
+            <Route path="/" element={
+              <ProtectedRoute>
+                <Index />
+              </ProtectedRoute>
+            } />
+            <Route path="/intake" element={
+              <ProtectedRoute>
+                <ClientIntake />
+              </ProtectedRoute>
+            } />
+            <Route path="/schedule" element={
+              <ProtectedRoute>
+                <Schedule />
+              </ProtectedRoute>
+            } />
+            <Route path="/exercises" element={
+              <ProtectedRoute>
+                <Exercises />
+              </ProtectedRoute>
+            } />
+            <Route path="/exercise-plan-generator" element={
+              <ProtectedRoute>
+                <ExercisePlanGenerator />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin" element={
+              <ProtectedRoute requireAdmin={true}>
+                <AdminDashboard />
+              </ProtectedRoute>
+            } />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

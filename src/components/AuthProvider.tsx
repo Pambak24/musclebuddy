@@ -46,7 +46,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         .single();
       
       setProfile(data);
-      setIsAdmin(data?.role === 'therapist');
+      setIsAdmin(data?.role === 'admin');
     } catch (error) {
       console.error('Error fetching profile:', error);
     }
