@@ -1,5 +1,5 @@
 {
-  "appId": "com.musclebuddy.app",
+  "appId": "io.ionic.starter",
   "appName": "MuscleB",
   "webDir": "dist",
   "server": {
