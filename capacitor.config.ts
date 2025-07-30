@@ -1,7 +1,7 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'app.lovable.419118cb197f40b786ecf73e4dc88711',
+  appId: 'com.musclebuddy.app',
   appName: 'Muscle Buddy - AI Recovery',
   webDir: 'dist',
   server: {
