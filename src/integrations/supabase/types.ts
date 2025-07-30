@@ -47,6 +47,69 @@ export type Database = {
         }
         Relationships: []
       }
+      gait_analyses: {
+        Row: {
+          ai_analysis: Json | null
+          analysis_date: string
+          cadence: number | null
+          corrective_exercises: Json | null
+          created_at: string
+          detected_abnormalities: string[] | null
+          id: string
+          notes: string | null
+          overall_score: number | null
+          recommendations: string[] | null
+          session_name: string
+          step_length_left: number | null
+          step_length_right: number | null
+          stride_length: number | null
+          updated_at: string
+          user_id: string
+          video_urls: string[] | null
+          walking_speed: number | null
+        }
+        Insert: {
+          ai_analysis?: Json | null
+          analysis_date?: string
+          cadence?: number | null
+          corrective_exercises?: Json | null
+          created_at?: string
+          detected_abnormalities?: string[] | null
+          id?: string
+          notes?: string | null
+          overall_score?: number | null
+          recommendations?: string[] | null
+          session_name: string
+          step_length_left?: number | null
+          step_length_right?: number | null
+          stride_length?: number | null
+          updated_at?: string
+          user_id: string
+          video_urls?: string[] | null
+          walking_speed?: number | null
+        }
+        Update: {
+          ai_analysis?: Json | null
+          analysis_date?: string
+          cadence?: number | null
+          corrective_exercises?: Json | null
+          created_at?: string
+          detected_abnormalities?: string[] | null
+          id?: string
+          notes?: string | null
+          overall_score?: number | null
+          recommendations?: string[] | null
+          session_name?: string
+          step_length_left?: number | null
+          step_length_right?: number | null
+          stride_length?: number | null
+          updated_at?: string
+          user_id?: string
+          video_urls?: string[] | null
+          walking_speed?: number | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string

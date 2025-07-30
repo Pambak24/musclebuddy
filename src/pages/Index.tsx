@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, Clock, User, Target, LogOut } from "lucide-react";
+import { Calendar, Clock, User, Target, LogOut, BarChart3 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/components/AuthProvider";
 import { LoginForm } from "@/components/LoginForm";
@@ -139,6 +139,12 @@ const Index = () => {
                     </Link>
                     <Link to="/examination">
                       <Button variant="outline">AI Examination</Button>
+                    </Link>
+                    <Link to="/gait-analysis">
+                      <Button variant="outline" size="lg" className="flex items-center gap-2">
+                        <BarChart3 className="w-5 h-5" />
+                        Gait Analysis
+                      </Button>
                     </Link>
                   </div>
         </div>
