@@ -11,6 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/components/AuthProvider";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
+import { ExercisePlanDisplay } from "@/components/ExercisePlanDisplay";
 
 interface Profile {
   id: string;
@@ -329,12 +330,12 @@ const AdminDashboard = () => {
                                           {plan.client_data}
                                         </p>
                                       </div>
-                                      <div>
-                                        <strong>Generated Plan:</strong>
-                                        <pre className="text-sm text-muted-foreground mt-1 whitespace-pre-wrap bg-background p-2 rounded border max-h-40 overflow-y-auto">
-                                          {JSON.stringify(plan.exercise_plan, null, 2)}
-                                        </pre>
-                                      </div>
+                                       <div>
+                                         <strong>Generated Plan:</strong>
+                                         <div className="mt-2 p-4 bg-background rounded border">
+                                           <ExercisePlanDisplay exercisePlan={plan.exercise_plan} />
+                                         </div>
+                                       </div>
                                     </div>
                                   </details>
                                 </div>
@@ -554,12 +555,12 @@ const AdminDashboard = () => {
                                 <strong>Client Data:</strong>
                                 <p className="text-sm text-muted-foreground mt-1">{plan.client_data.substring(0, 200)}...</p>
                               </div>
-                              <div>
-                                <strong>Exercise Plan:</strong>
-                                <pre className="text-sm text-muted-foreground mt-1 whitespace-pre-wrap bg-background p-2 rounded">
-                                  {JSON.stringify(plan.exercise_plan, null, 2)}
-                                </pre>
-                              </div>
+                               <div>
+                                 <strong>Exercise Plan:</strong>
+                                 <div className="mt-2 p-4 bg-background rounded border max-h-96 overflow-y-auto">
+                                   <ExercisePlanDisplay exercisePlan={plan.exercise_plan} />
+                                 </div>
+                               </div>
                             </div>
                           </details>
                         </TableCell>
