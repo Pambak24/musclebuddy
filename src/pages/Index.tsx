@@ -41,8 +41,8 @@ const Index = () => {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center py-6">
               <div>
-                <h1 className="text-2xl font-bold">Muscle Buddy</h1>
-                <p className="text-muted-foreground">Recovery & Wellness App</p>
+              <h1 className="text-2xl font-bold">MuscleBuddy</h1>
+              <p className="text-muted-foreground">Your Muscle's Best Friend</p>
               </div>
               <div className="flex items-center gap-4">
                 <span className="text-sm text-muted-foreground">Recovery App</span>
@@ -54,7 +54,7 @@ const Index = () => {
         {/* Login Section */}
         <div className="container mx-auto px-4 py-16">
           <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold mb-4">Welcome to Muscle Buddy</h1>
+            <h1 className="text-4xl font-bold mb-4">Welcome to MuscleBuddy</h1>
             <p className="text-xl text-muted-foreground mb-8">
               Sign in to access your recovery and wellness dashboard
             </p>
@@ -74,8 +74,8 @@ const Index = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
             <div>
-              <h1 className="text-2xl font-bold">Muscle Buddy</h1>
-              <p className="text-muted-foreground">Recovery & Wellness App</p>
+            <h1 className="text-2xl font-bold">MuscleBuddy</h1>
+            <p className="text-muted-foreground">Your Muscle's Best Friend</p>
             </div>
             <div className="flex items-center gap-4">
               {user && (
