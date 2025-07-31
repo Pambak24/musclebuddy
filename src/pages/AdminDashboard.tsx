@@ -31,11 +31,23 @@ interface ExercisePlan {
   updated_at: string;
 }
 
+interface Examination {
+  id: string;
+  user_id: string;
+  description: string;
+  diagnosis: any;
+  status: string;
+  media_urls: string[];
+  created_at: string;
+  updated_at: string;
+}
+
 const AdminDashboard = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [exercisePlans, setExercisePlans] = useState<ExercisePlan[]>([]);
+  const [examinations, setExaminations] = useState<Examination[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [roleFilter, setRoleFilter] = useState<string>("all");
   const [loading, setLoading] = useState(true);
@@ -63,6 +75,15 @@ const AdminDashboard = () => {
 
       if (plansError) throw plansError;
       setExercisePlans(plansData || []);
+
+      // Fetch all examinations
+      const { data: examinationsData, error: examinationsError } = await supabase
+        .from('examinations')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (examinationsError) throw examinationsError;
+      setExaminations(examinationsData || []);
     } catch (error) {
       console.error('Error fetching data:', error);
       toast({
@@ -114,6 +135,7 @@ const AdminDashboard = () => {
     totalAdmins: profiles.filter(p => p.role === 'admin').length,
     totalUsers: profiles.length,
     totalExercisePlans: exercisePlans.length,
+    totalExaminations: examinations.length,
   };
 
   if (loading) {
@@ -144,7 +166,7 @@ const AdminDashboard = () => {
 
       <div className="container mx-auto px-4 py-8">
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6 mb-8">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Total Clients</CardTitle>
@@ -194,12 +216,23 @@ const AdminDashboard = () => {
               <div className="text-2xl font-bold">{stats.totalExercisePlans}</div>
             </CardContent>
           </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Examinations</CardTitle>
+              <Activity className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{stats.totalExaminations}</div>
+            </CardContent>
+          </Card>
         </div>
 
         <Tabs defaultValue="users" className="w-full">
           <TabsList>
             <TabsTrigger value="users">User Management</TabsTrigger>
             <TabsTrigger value="exercise-plans">Exercise Plans</TabsTrigger>
+            <TabsTrigger value="examinations">Posture & Gait Analysis</TabsTrigger>
           </TabsList>
           
           <TabsContent value="users">
@@ -324,6 +357,92 @@ const AdminDashboard = () => {
                       <TableRow>
                         <TableCell colSpan={3} className="text-center text-muted-foreground">
                           No exercise plans found
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="examinations">
+            <Card>
+              <CardHeader>
+                <CardTitle>Posture & Gait Analysis</CardTitle>
+                <CardDescription>
+                  View all examination results and AI analysis
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Date</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Description</TableHead>
+                      <TableHead>Analysis Results</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {examinations.map((exam) => (
+                      <TableRow key={exam.id}>
+                        <TableCell>{new Date(exam.created_at).toLocaleDateString()}</TableCell>
+                        <TableCell>
+                          <Badge variant={exam.status === 'completed' ? 'default' : 'secondary'}>
+                            {exam.status}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="max-w-xs truncate">{exam.description || 'No description'}</TableCell>
+                        <TableCell>
+                          <details className="cursor-pointer">
+                            <summary className="text-primary hover:underline">View Analysis</summary>
+                            <div className="mt-2 p-4 bg-muted rounded space-y-2 max-w-lg">
+                              {exam.diagnosis && (
+                                <>
+                                  <div>
+                                    <strong>Assessment:</strong>
+                                    <p className="text-sm text-muted-foreground mt-1">{exam.diagnosis.assessment || 'No assessment available'}</p>
+                                  </div>
+                                  <div>
+                                    <strong>Urgency:</strong>
+                                    <Badge variant={exam.diagnosis.urgencyLevel === 'high' ? 'destructive' : exam.diagnosis.urgencyLevel === 'medium' ? 'default' : 'secondary'} className="ml-2">
+                                      {exam.diagnosis.urgencyLevel || 'Unknown'}
+                                    </Badge>
+                                  </div>
+                                  <div>
+                                    <strong>Key Findings:</strong>
+                                    <ul className="text-sm text-muted-foreground mt-1 list-disc list-inside">
+                                      {exam.diagnosis.findings?.map((finding: string, index: number) => (
+                                        <li key={index}>{finding}</li>
+                                      )) || <li>No findings available</li>}
+                                    </ul>
+                                  </div>
+                                  <div>
+                                    <strong>Recommendations:</strong>
+                                    <ul className="text-sm text-muted-foreground mt-1 list-disc list-inside">
+                                      {exam.diagnosis.recommendations?.map((rec: string, index: number) => (
+                                        <li key={index}>{rec}</li>
+                                      )) || <li>No recommendations available</li>}
+                                    </ul>
+                                  </div>
+                                </>
+                              )}
+                              {exam.media_urls && exam.media_urls.length > 0 && (
+                                <div>
+                                  <strong>Media Files:</strong>
+                                  <p className="text-sm text-muted-foreground">{exam.media_urls.length} file(s) uploaded</p>
+                                </div>
+                              )}
+                            </div>
+                          </details>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                    {examinations.length === 0 && (
+                      <TableRow>
+                        <TableCell colSpan={4} className="text-center text-muted-foreground">
+                          No examinations found
                         </TableCell>
                       </TableRow>
                     )}
