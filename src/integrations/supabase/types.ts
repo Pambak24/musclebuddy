@@ -47,6 +47,36 @@ export type Database = {
         }
         Relationships: []
       }
+      exercise_plans: {
+        Row: {
+          client_data: string
+          client_name: string
+          created_at: string
+          exercise_plan: Json
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          client_data: string
+          client_name: string
+          created_at?: string
+          exercise_plan: Json
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          client_data?: string
+          client_name?: string
+          created_at?: string
+          exercise_plan?: Json
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       gait_analyses: {
         Row: {
           ai_analysis: Json | null

@@ -232,23 +232,33 @@ Goals:
     }
   };
 
-  const savePlan = () => {
-    if (!exercisePlan) return;
+  const savePlan = async () => {
+    if (!exercisePlan || !user) return;
 
-    const plans = JSON.parse(localStorage.getItem('exercise_plans') || '[]');
-    const newPlan = {
-      id: Date.now(),
-      createdAt: new Date().toISOString(),
-      plan: exercisePlan,
-      clientData: clientData.substring(0, 100) + '...'
-    };
-    plans.push(newPlan);
-    localStorage.setItem('exercise_plans', JSON.stringify(plans));
-    
-    toast({
-      title: 'Plan Saved!',
-      description: 'Exercise plan has been saved locally.',
-    });
+    try {
+      const { error } = await supabase
+        .from('exercise_plans')
+        .insert({
+          user_id: user.id,
+          client_name: 'John Doe',
+          client_data: clientData,
+          exercise_plan: exercisePlan as any
+        });
+
+      if (error) throw error;
+
+      toast({
+        title: 'Plan Saved!',
+        description: 'John Doe\'s exercise plan has been saved to the database.',
+      });
+    } catch (error) {
+      console.error('Error saving plan:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to save exercise plan. Please try again.',
+        variant: 'destructive',
+      });
+    }
   };
 
   return (
