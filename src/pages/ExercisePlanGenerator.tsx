@@ -31,7 +31,52 @@ interface ExercisePlan {
 const ExercisePlanGenerator = () => {
   const { toast } = useToast();
   const { user } = useAuth();
-  const [clientData, setClientData] = useState(localStorage.getItem('client_assessment') || '');
+  const [clientData, setClientData] = useState(localStorage.getItem('client_assessment') || `Client Assessment Data:
+
+Personal Information:
+- Name: John Doe
+- Age: 45
+- Occupation: Office worker/desk job
+- Activity Level: Sedentary with minimal exercise
+
+Primary Complaint:
+Lower back pain shooting down left leg, pain in both knees going down stairs and neck pain with limited range of motion
+
+Pain Assessment:
+- Pain Areas: Neck, Upper Back, Lower Back, Knees, Hips
+- Pain Level: 7/10 overall
+- Lower back pain radiates down left leg (possible sciatica)
+- Bilateral knee pain specifically when descending stairs
+- Neck pain with restricted range of motion
+- Pain worse in mornings and after prolonged sitting
+
+Medical History:
+- No significant past injuries
+- No current medications
+- No contraindications to exercise
+
+Functional Limitations:
+- Difficulty sitting for extended periods
+- Pain when getting up from seated position
+- Avoiding stairs when possible due to knee pain
+- Limited neck rotation and flexion
+- Sleep disruption due to pain
+
+Movement Assessment:
+- Forward head posture
+- Rounded shoulders
+- Increased lumbar lordosis
+- Possible hip flexor tightness
+- Weak glutes and core
+- Compensation patterns evident
+
+Goals:
+- Reduce pain levels to 3/10 or below
+- Improve functional mobility for daily activities
+- Return to pain-free stair navigation
+- Increase neck range of motion
+- Improve posture and ergonomics
+- Prevent future episodes`);
   const [isGenerating, setIsGenerating] = useState(false);
   const [exercisePlan, setExercisePlan] = useState<ExercisePlan | null>(null);
 
