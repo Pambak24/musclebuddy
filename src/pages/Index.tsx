@@ -137,9 +137,6 @@ const Index = () => {
                     <Link to="/exercise-plan-generator">
                       <Button>Generate Plan</Button>
                     </Link>
-                    <Link to="/examination">
-                      <Button variant="outline">AI Examination</Button>
-                    </Link>
                   </div>
         </div>
 
