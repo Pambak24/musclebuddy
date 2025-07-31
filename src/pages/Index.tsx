@@ -140,12 +140,6 @@ const Index = () => {
                     <Link to="/examination">
                       <Button variant="outline">AI Examination</Button>
                     </Link>
-                    <Link to="/gait-analysis">
-                      <Button variant="outline" size="lg" className="flex items-center gap-2">
-                        <BarChart3 className="w-5 h-5" />
-                        Gait Analysis
-                      </Button>
-                    </Link>
                   </div>
         </div>
 
