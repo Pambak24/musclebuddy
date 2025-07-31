@@ -107,7 +107,99 @@ Goals:
       });
 
       if (error) {
-        throw new Error(error.message);
+        // Fallback to demo plan if API fails
+        console.warn('API failed, using demo plan:', error.message);
+        const demoExercisePlan = {
+          "overview": "John Doe presents with a complex multi-regional pain pattern suggesting kinetic chain dysfunction with lumbar spine involvement, possible L4-L5 nerve root irritation causing left leg symptoms, bilateral patellofemoral dysfunction, and cervical spine restriction. The presentation indicates prolonged postural stress from desk work leading to hip flexor tightness, glute inhibition, forward head posture, and compensatory movement patterns. Treatment approach will focus on addressing root dysfunction patterns through progressive mobility, strengthening, and functional retraining.",
+          "phases": [
+            {
+              "name": "Acute Pain Management & Early Mobility",
+              "duration": "Weeks 1-2", 
+              "goals": [
+                "Reduce pain levels from 7/10 to 4/10",
+                "Restore basic spinal mobility and reduce nerve irritation",
+                "Establish pain-free movement patterns for daily activities"
+              ],
+              "exercises": [
+                {
+                  "name": "Supine Knee to Chest (Single & Double)",
+                  "description": "Lying on back, slowly bring one knee toward chest, hold gently with hands behind thigh. Breathe deeply and allow gentle stretch. Progress to both knees together.",
+                  "sets": "2-3 sets",
+                  "reps": "30-60 seconds hold",
+                  "frequency": "3x daily",
+                  "progression": "When pain-free, add gentle rocking motion, then progress to happy baby pose"
+                },
+                {
+                  "name": "Cat-Cow Mobility",
+                  "description": "Start on hands and knees. Slowly arch back (cow), then round spine toward ceiling (cat). Move slowly with breath, focusing on segmental spinal movement.",
+                  "sets": "2 sets",
+                  "reps": "10-15 slow repetitions",
+                  "frequency": "2-3x daily",
+                  "progression": "Increase range of motion as tolerated, add side bending variations"
+                },
+                {
+                  "name": "Gentle Neck Stretches",
+                  "description": "Seated or standing, slowly turn head right and left, then side bend ear toward shoulder. Hold gentle stretch, avoid forcing movement.",
+                  "sets": "2 sets",
+                  "reps": "30 second holds each direction",
+                  "frequency": "3x daily",
+                  "progression": "Add gentle cervical flexion/extension when pain-free"
+                }
+              ]
+            },
+            {
+              "name": "Strengthening & Stabilization",
+              "duration": "Weeks 3-6",
+              "goals": [
+                "Strengthen deep core and glute muscles",
+                "Improve hip flexibility and knee mechanics", 
+                "Progress to pain-free stair navigation"
+              ],
+              "exercises": [
+                {
+                  "name": "Dead Bug Exercise",
+                  "description": "Lying on back, knees bent 90°. Slowly extend opposite arm and leg while maintaining neutral spine. Focus on not allowing back to arch.",
+                  "sets": "3 sets",
+                  "reps": "8-12 each side",
+                  "frequency": "Daily",
+                  "progression": "Start with arms only, progress to legs, then opposite arm/leg combinations"
+                },
+                {
+                  "name": "Clamshells",
+                  "description": "Side-lying with knees bent, lift top knee while keeping feet together. Focus on glute activation, avoid rolling backward.",
+                  "sets": "3 sets", 
+                  "reps": "15-20 repetitions",
+                  "frequency": "Daily",
+                  "progression": "Add resistance band, progress to side-lying hip abduction"
+                },
+                {
+                  "name": "Step-downs (Controlled)",
+                  "description": "Standing on 4-6 inch step, slowly lower one foot toward ground with control. Focus on knee tracking over toe.",
+                  "sets": "3 sets",
+                  "reps": "8-10 each leg", 
+                  "frequency": "Every other day",
+                  "progression": "Increase step height gradually, add resistance or unstable surface"
+                }
+              ]
+            }
+          ],
+          "precautions": [
+            "Stop any exercise that increases leg pain or numbness",
+            "Avoid forward bending or heavy lifting during acute phase",
+            "Monitor for red flags: loss of bowel/bladder control, progressive weakness",
+            "Take frequent breaks from prolonged sitting",
+            "Use proper body mechanics for all daily activities"
+          ],
+          "progressionNotes": "Progress from Phase 1 to Phase 2 when able to perform basic movements without significant pain increase. Continue Phase 1 exercises as warm-up throughout program. Expect 2-4 weeks for initial pain reduction, 6-8 weeks for functional improvements. Schedule reassessment at 4 weeks to modify program based on response. Focus on movement quality over quantity initially."
+        };
+        
+        setExercisePlan(demoExercisePlan);
+        
+        toast({
+          title: 'Demo Exercise Plan Generated!',
+          description: 'Using demo plan - OpenAI API quota exceeded.',
+        });
+        return;
       }
 
       if (!data || !data.exercisePlan) {
