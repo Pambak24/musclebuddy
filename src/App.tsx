@@ -19,23 +19,17 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
-// Handle splash screen for mobile
-const hideSplashScreen = async () => {
+// Handle splash screen for mobile - call immediately
+(async () => {
   try {
     const { SplashScreen } = await import('@capacitor/splash-screen');
     await SplashScreen.hide();
   } catch (error) {
     // SplashScreen not available (web environment)
-    console.log('SplashScreen not available:', error);
   }
-};
+})();
 
 const App = () => {
-  useEffect(() => {
-    // Hide splash screen when app is loaded
-    hideSplashScreen();
-  }, []);
-
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
