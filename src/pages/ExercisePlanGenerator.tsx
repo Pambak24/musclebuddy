@@ -202,7 +202,7 @@ Goals:
         return;
       }
 
-      if (!data || !data.exercisePlan) {
+      if (!data?.exercisePlan) {
         throw new Error('Invalid response from server');
       }
 
