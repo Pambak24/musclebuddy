@@ -50,6 +50,7 @@ const AdminDashboard = () => {
   const [examinations, setExaminations] = useState<Examination[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [roleFilter, setRoleFilter] = useState<string>("all");
+  const [selectedClientId, setSelectedClientId] = useState<string>("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -96,7 +97,6 @@ const AdminDashboard = () => {
     }
   };
 
-
   const updateUserRole = async (userId: string, newRole: 'admin' | 'trainer' | 'client') => {
     try {
       const { error } = await supabase
@@ -128,6 +128,15 @@ const AdminDashboard = () => {
     const matchesRole = roleFilter === "all" || profile.role === roleFilter;
     return matchesSearch && matchesRole;
   });
+
+  const selectedClient = selectedClientId ? profiles.find(p => p.user_id === selectedClientId) : null;
+  const clientExercisePlans = selectedClientId ? exercisePlans.filter(p => p.user_id === selectedClientId) : [];
+  const clientExaminations = selectedClientId ? examinations.filter(e => e.user_id === selectedClientId) : [];
+
+  // Find John Doe automatically
+  const johnDoe = profiles.find(p => p.full_name?.toLowerCase().includes('john doe') || p.email?.toLowerCase().includes('john'));
+  
+  const clients = profiles.filter(p => p.role === 'client');
 
   const stats = {
     totalClients: profiles.filter(p => p.role === 'client').length,
@@ -228,13 +237,216 @@ const AdminDashboard = () => {
           </Card>
         </div>
 
-        <Tabs defaultValue="users" className="w-full">
+        <Tabs defaultValue="client-files" className="w-full">
           <TabsList>
+            <TabsTrigger value="client-files">Client Files</TabsTrigger>
             <TabsTrigger value="users">User Management</TabsTrigger>
-            <TabsTrigger value="exercise-plans">Exercise Plans</TabsTrigger>
-            <TabsTrigger value="examinations">Posture & Gait Analysis</TabsTrigger>
+            <TabsTrigger value="exercise-plans">All Exercise Plans</TabsTrigger>
+            <TabsTrigger value="examinations">All Examinations</TabsTrigger>
           </TabsList>
           
+          <TabsContent value="client-files">
+            <div className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Client Files</CardTitle>
+                  <CardDescription>
+                    View individual client data and history
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex gap-4 mb-6">
+                    <Select value={selectedClientId} onValueChange={setSelectedClientId}>
+                      <SelectTrigger className="w-64">
+                        <SelectValue placeholder="Select a client" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {clients.map((client) => (
+                          <SelectItem key={client.user_id} value={client.user_id}>
+                            {client.full_name || client.email}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    {johnDoe && (
+                      <Button 
+                        variant="outline" 
+                        onClick={() => setSelectedClientId(johnDoe.user_id)}
+                        className="text-primary"
+                      >
+                        Quick Select: John Doe
+                      </Button>
+                    )}
+                  </div>
+
+                  {selectedClient && (
+                    <div className="space-y-6">
+                      {/* Client Profile */}
+                      <Card>
+                        <CardHeader>
+                          <CardTitle>Client Profile</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="grid grid-cols-2 gap-4">
+                            <div>
+                              <strong>Name:</strong> {selectedClient.full_name || 'Not set'}
+                            </div>
+                            <div>
+                              <strong>Email:</strong> {selectedClient.email}
+                            </div>
+                            <div>
+                              <strong>Role:</strong> <Badge>{selectedClient.role}</Badge>
+                            </div>
+                            <div>
+                              <strong>Joined:</strong> {new Date(selectedClient.created_at).toLocaleDateString()}
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+
+                      {/* Exercise Plans */}
+                      <Card>
+                        <CardHeader>
+                          <CardTitle>Exercise Plans ({clientExercisePlans.length})</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          {clientExercisePlans.length > 0 ? (
+                            <div className="space-y-4">
+                              {clientExercisePlans.map((plan) => (
+                                <div key={plan.id} className="border rounded-lg p-4">
+                                  <div className="flex justify-between items-start mb-2">
+                                    <h4 className="font-semibold">{plan.client_name}</h4>
+                                    <span className="text-sm text-muted-foreground">
+                                      {new Date(plan.created_at).toLocaleDateString()}
+                                    </span>
+                                  </div>
+                                  <details className="cursor-pointer">
+                                    <summary className="text-primary hover:underline text-sm">View Exercise Plan</summary>
+                                    <div className="mt-2 space-y-2">
+                                      <div>
+                                        <strong>Client Data:</strong>
+                                        <p className="text-sm text-muted-foreground mt-1 bg-muted p-2 rounded">
+                                          {plan.client_data}
+                                        </p>
+                                      </div>
+                                      <div>
+                                        <strong>Generated Plan:</strong>
+                                        <pre className="text-sm text-muted-foreground mt-1 whitespace-pre-wrap bg-background p-2 rounded border max-h-40 overflow-y-auto">
+                                          {JSON.stringify(plan.exercise_plan, null, 2)}
+                                        </pre>
+                                      </div>
+                                    </div>
+                                  </details>
+                                </div>
+                              ))}
+                            </div>
+                          ) : (
+                            <p className="text-muted-foreground">No exercise plans found for this client.</p>
+                          )}
+                        </CardContent>
+                      </Card>
+
+                      {/* Examinations */}
+                      <Card>
+                        <CardHeader>
+                          <CardTitle>Posture & Gait Analysis ({clientExaminations.length})</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          {clientExaminations.length > 0 ? (
+                            <div className="space-y-4">
+                              {clientExaminations.map((exam) => (
+                                <div key={exam.id} className="border rounded-lg p-4">
+                                  <div className="flex justify-between items-start mb-2">
+                                    <div className="flex items-center gap-2">
+                                      <Badge variant={exam.status === 'completed' ? 'default' : 'secondary'}>
+                                        {exam.status}
+                                      </Badge>
+                                      {exam.diagnosis?.urgencyLevel && (
+                                        <Badge variant={
+                                          exam.diagnosis.urgencyLevel === 'high' ? 'destructive' : 
+                                          exam.diagnosis.urgencyLevel === 'medium' ? 'default' : 'secondary'
+                                        }>
+                                          {exam.diagnosis.urgencyLevel} urgency
+                                        </Badge>
+                                      )}
+                                    </div>
+                                    <span className="text-sm text-muted-foreground">
+                                      {new Date(exam.created_at).toLocaleDateString()}
+                                    </span>
+                                  </div>
+                                  
+                                  <div className="space-y-3">
+                                    <div>
+                                      <strong>Description:</strong>
+                                      <p className="text-sm text-muted-foreground">{exam.description || 'No description provided'}</p>
+                                    </div>
+                                    
+                                    {exam.diagnosis && (
+                                      <div className="space-y-2">
+                                        <div>
+                                          <strong>Assessment:</strong>
+                                          <p className="text-sm text-muted-foreground">{exam.diagnosis.assessment}</p>
+                                        </div>
+                                        
+                                        {exam.diagnosis.findings && exam.diagnosis.findings.length > 0 && (
+                                          <div>
+                                            <strong>Key Findings:</strong>
+                                            <ul className="text-sm text-muted-foreground list-disc list-inside">
+                                              {exam.diagnosis.findings.map((finding: string, index: number) => (
+                                                <li key={index}>{finding}</li>
+                                              ))}
+                                            </ul>
+                                          </div>
+                                        )}
+                                        
+                                        {exam.diagnosis.recommendations && exam.diagnosis.recommendations.length > 0 && (
+                                          <div>
+                                            <strong>Recommendations:</strong>
+                                            <ul className="text-sm text-muted-foreground list-disc list-inside">
+                                              {exam.diagnosis.recommendations.map((rec: string, index: number) => (
+                                                <li key={index}>{rec}</li>
+                                              ))}
+                                            </ul>
+                                          </div>
+                                        )}
+                                        
+                                        {exam.diagnosis.nextSteps && (
+                                          <div>
+                                            <strong>Next Steps:</strong>
+                                            <p className="text-sm text-muted-foreground">{exam.diagnosis.nextSteps}</p>
+                                          </div>
+                                        )}
+                                      </div>
+                                    )}
+                                    
+                                    {exam.media_urls && exam.media_urls.length > 0 && (
+                                      <div>
+                                        <strong>Media Files:</strong>
+                                        <p className="text-sm text-muted-foreground">{exam.media_urls.length} file(s) uploaded</p>
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          ) : (
+                            <p className="text-muted-foreground">No examinations found for this client.</p>
+                          )}
+                        </CardContent>
+                      </Card>
+                    </div>
+                  )}
+                  
+                  {!selectedClient && (
+                    <div className="text-center py-8">
+                      <p className="text-muted-foreground">Select a client to view their complete file</p>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
           <TabsContent value="users">
             <Card>
               <CardHeader>
