@@ -1,0 +1,1 @@
+UPDATE profiles SET role = 'admin' WHERE email = 'christianpambak23@gmail.com';
