@@ -53,6 +53,7 @@ const AdminDashboard = () => {
   const [roleFilter, setRoleFilter] = useState<string>("all");
   const [selectedClientId, setSelectedClientId] = useState<string>("");
   const [loading, setLoading] = useState(true);
+  const [expandedPlans, setExpandedPlans] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     fetchData();
@@ -288,11 +289,11 @@ const AdminDashboard = () => {
                           <CardTitle>Client Profile</CardTitle>
                         </CardHeader>
                         <CardContent>
-                          <div className="grid grid-cols-2 gap-4">
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
                               <strong>Name:</strong> {selectedClient.full_name || 'Not set'}
                             </div>
-                            <div>
+                            <div className="break-all">
                               <strong>Email:</strong> {selectedClient.email}
                             </div>
                             <div>
@@ -324,29 +325,34 @@ const AdminDashboard = () => {
                                    <div className="bg-muted p-3 rounded-lg">
                                      <button 
                                        className="w-full text-left text-primary hover:underline text-sm font-medium mb-2"
-                                       onClick={(e) => {
-                                         const content = e.currentTarget.nextElementSibling as HTMLElement;
-                                         if (content) {
-                                           content.style.display = content.style.display === 'none' ? 'block' : 'none';
+                                       onClick={() => {
+                                         const newExpanded = new Set(expandedPlans);
+                                         if (newExpanded.has(plan.id)) {
+                                           newExpanded.delete(plan.id);
+                                         } else {
+                                           newExpanded.add(plan.id);
                                          }
+                                         setExpandedPlans(newExpanded);
                                        }}
                                      >
-                                       View Exercise Plan
+                                       {expandedPlans.has(plan.id) ? '▼ Hide Exercise Plan' : '▶ View Exercise Plan'}
                                      </button>
-                                     <div className="space-y-3" style={{ display: 'none' }}>
-                                       <div>
-                                         <strong className="text-sm">Client Data:</strong>
-                                         <div className="text-sm text-muted-foreground mt-1 bg-background p-3 rounded max-h-32 overflow-y-auto">
-                                           {plan.client_data}
+                                     {expandedPlans.has(plan.id) && (
+                                       <div className="space-y-3">
+                                         <div>
+                                           <strong className="text-sm">Client Data:</strong>
+                                           <div className="text-sm text-muted-foreground mt-1 bg-background p-3 rounded max-h-32 overflow-y-auto">
+                                             {plan.client_data}
+                                           </div>
                                          </div>
-                                       </div>
-                                        <div>
-                                          <strong className="text-sm">Generated Plan:</strong>
-                                          <div className="mt-2 p-3 bg-background rounded border max-h-96 overflow-y-auto">
-                                            <ExercisePlanDisplay exercisePlan={plan.exercise_plan} />
+                                          <div>
+                                            <strong className="text-sm">Generated Plan:</strong>
+                                            <div className="mt-2 p-3 bg-background rounded border max-h-96 overflow-y-auto">
+                                              <ExercisePlanDisplay exercisePlan={plan.exercise_plan} />
+                                            </div>
                                           </div>
-                                        </div>
-                                     </div>
+                                       </div>
+                                     )}
                                    </div>
                                 </div>
                               ))}
