@@ -111,9 +111,6 @@ const Index = () => {
               <Clock className="w-4 h-4 mr-2" />
               1 Hour Sessions
             </Badge>
-            <Badge variant="secondary" className="text-lg px-4 py-2">
-              $150 per Visit
-            </Badge>
           </div>
                   <div className="flex flex-wrap justify-center gap-4">
                     <Link to="/schedule">
