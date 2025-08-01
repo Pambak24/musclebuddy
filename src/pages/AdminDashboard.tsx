@@ -489,48 +489,92 @@ const AdminDashboard = () => {
                 </div>
               </CardHeader>
               <CardContent>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Name</TableHead>
-                      <TableHead>Email</TableHead>
-                      <TableHead>Role</TableHead>
-                      <TableHead>Joined</TableHead>
-                      <TableHead>Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
+                <div className="space-y-4">
+                  {/* Desktop Table View */}
+                  <div className="hidden md:block">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Name</TableHead>
+                          <TableHead>Email</TableHead>
+                          <TableHead>Role</TableHead>
+                          <TableHead>Joined</TableHead>
+                          <TableHead>Actions</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {filteredProfiles.map((profile) => (
+                          <TableRow key={profile.id}>
+                            <TableCell>{profile.full_name || "No name set"}</TableCell>
+                            <TableCell>{profile.email}</TableCell>
+                            <TableCell>
+                              <Badge variant={profile.role === 'admin' ? 'destructive' : profile.role === 'trainer' ? 'default' : 'secondary'}>
+                                {profile.role}
+                              </Badge>
+                            </TableCell>
+                            <TableCell>
+                              {new Date(profile.created_at).toLocaleDateString()}
+                            </TableCell>
+                            <TableCell>
+                              <Select
+                                value={profile.role}
+                                onValueChange={(value: 'admin' | 'trainer' | 'client') => updateUserRole(profile.user_id, value)}
+                              >
+                                <SelectTrigger className="w-32">
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="client">Client</SelectItem>
+                                  <SelectItem value="trainer">Trainer</SelectItem>
+                                  <SelectItem value="admin">Admin</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+
+                  {/* Mobile Card View */}
+                  <div className="md:hidden space-y-4">
                     {filteredProfiles.map((profile) => (
-                      <TableRow key={profile.id}>
-                        <TableCell>{profile.full_name || "No name set"}</TableCell>
-                        <TableCell>{profile.email}</TableCell>
-                        <TableCell>
-                          <Badge variant={profile.role === 'admin' ? 'destructive' : profile.role === 'trainer' ? 'default' : 'secondary'}>
-                            {profile.role}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>
-                          {new Date(profile.created_at).toLocaleDateString()}
-                        </TableCell>
-                        <TableCell>
-                          <Select
-                            value={profile.role}
-                            onValueChange={(value: 'admin' | 'trainer' | 'client') => updateUserRole(profile.user_id, value)}
-                          >
-                            <SelectTrigger className="w-32">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="client">Client</SelectItem>
-                              <SelectItem value="trainer">Trainer</SelectItem>
-                              <SelectItem value="admin">Admin</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </TableCell>
-                      </TableRow>
+                      <Card key={profile.id}>
+                        <CardContent className="p-4">
+                          <div className="space-y-3">
+                            <div className="flex justify-between items-start">
+                              <div>
+                                <h3 className="font-medium">{profile.full_name || "No name set"}</h3>
+                                <p className="text-sm text-muted-foreground break-all">{profile.email}</p>
+                              </div>
+                              <Badge variant={profile.role === 'admin' ? 'destructive' : profile.role === 'trainer' ? 'default' : 'secondary'}>
+                                {profile.role}
+                              </Badge>
+                            </div>
+                            <div className="flex justify-between items-center">
+                              <span className="text-sm text-muted-foreground">
+                                Joined: {new Date(profile.created_at).toLocaleDateString()}
+                              </span>
+                              <Select
+                                value={profile.role}
+                                onValueChange={(value: 'admin' | 'trainer' | 'client') => updateUserRole(profile.user_id, value)}
+                              >
+                                <SelectTrigger className="w-24">
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="client">Client</SelectItem>
+                                  <SelectItem value="trainer">Trainer</SelectItem>
+                                  <SelectItem value="admin">Admin</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
                     ))}
-                  </TableBody>
-                </Table>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
