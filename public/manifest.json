@@ -26,13 +26,13 @@
   "screenshots": [
     {
       "src": "screenshot-1.png",
-      "sizes": "1170x2532",
+      "sizes": "1080x1920",
       "type": "image/png",
       "platform": "ios"
     },
     {
       "src": "screenshot-2.png", 
-      "sizes": "1080x2340",
+      "sizes": "1080x1920",
       "type": "image/png",
       "platform": "android"
     }
