@@ -40,7 +40,7 @@ serve(async (req) => {
         messages: [
           {
             role: 'system',
-            content: `You are an expert physical therapist with 20+ years of experience specializing in movement dysfunction analysis and corrective exercise prescription. Create comprehensive, evidence-based exercise plans that address:
+            content: `You are an expert movement specialist with 20+ years of experience specializing in movement dysfunction analysis and corrective exercise prescription. Create comprehensive, evidence-based exercise plans that address:
 
 1. Root cause analysis of movement dysfunctions and compensation patterns
 2. Biomechanical assessment of pain generators and dysfunction patterns
