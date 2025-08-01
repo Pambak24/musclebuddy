@@ -239,11 +239,11 @@ const AdminDashboard = () => {
         </div>
 
         <Tabs defaultValue="client-files" className="w-full">
-          <TabsList>
-            <TabsTrigger value="client-files">Client Files</TabsTrigger>
-            <TabsTrigger value="users">User Management</TabsTrigger>
-            <TabsTrigger value="exercise-plans">All Exercise Plans</TabsTrigger>
-            <TabsTrigger value="examinations">All Examinations</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-2 lg:grid-cols-4">
+            <TabsTrigger value="client-files" className="text-xs sm:text-sm">Client Files</TabsTrigger>
+            <TabsTrigger value="users" className="text-xs sm:text-sm">User Management</TabsTrigger>
+            <TabsTrigger value="exercise-plans" className="text-xs sm:text-sm">Exercise Plans</TabsTrigger>
+            <TabsTrigger value="examinations" className="text-xs sm:text-sm">Examinations</TabsTrigger>
           </TabsList>
           
           <TabsContent value="client-files">
