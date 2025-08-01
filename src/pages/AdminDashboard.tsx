@@ -321,23 +321,33 @@ const AdminDashboard = () => {
                                       {new Date(plan.created_at).toLocaleDateString()}
                                     </span>
                                   </div>
-                                  <details className="cursor-pointer">
-                                    <summary className="text-primary hover:underline text-sm">View Exercise Plan</summary>
-                                    <div className="mt-2 space-y-2">
-                                      <div>
-                                        <strong>Client Data:</strong>
-                                        <p className="text-sm text-muted-foreground mt-1 bg-muted p-2 rounded">
-                                          {plan.client_data}
-                                        </p>
-                                      </div>
+                                   <div className="bg-muted p-3 rounded-lg">
+                                     <button 
+                                       className="w-full text-left text-primary hover:underline text-sm font-medium mb-2"
+                                       onClick={(e) => {
+                                         const content = e.currentTarget.nextElementSibling as HTMLElement;
+                                         if (content) {
+                                           content.style.display = content.style.display === 'none' ? 'block' : 'none';
+                                         }
+                                       }}
+                                     >
+                                       View Exercise Plan
+                                     </button>
+                                     <div className="space-y-3" style={{ display: 'none' }}>
                                        <div>
-                                         <strong>Generated Plan:</strong>
-                                         <div className="mt-2 p-4 bg-background rounded border">
-                                           <ExercisePlanDisplay exercisePlan={plan.exercise_plan} />
+                                         <strong className="text-sm">Client Data:</strong>
+                                         <div className="text-sm text-muted-foreground mt-1 bg-background p-3 rounded max-h-32 overflow-y-auto">
+                                           {plan.client_data}
                                          </div>
                                        </div>
-                                    </div>
-                                  </details>
+                                        <div>
+                                          <strong className="text-sm">Generated Plan:</strong>
+                                          <div className="mt-2 p-3 bg-background rounded border max-h-96 overflow-y-auto">
+                                            <ExercisePlanDisplay exercisePlan={plan.exercise_plan} />
+                                          </div>
+                                        </div>
+                                     </div>
+                                   </div>
                                 </div>
                               ))}
                             </div>
