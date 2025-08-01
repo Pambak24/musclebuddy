@@ -113,12 +113,15 @@ const Index = () => {
             </Badge>
           </div>
                   <div className="flex flex-wrap justify-center gap-4">
-                    <Link to="/schedule">
-                      <Button size="lg" className="flex items-center gap-2">
-                        <Calendar className="w-5 h-5" />
-                        Schedule Appointment
-                      </Button>
-                    </Link>
+                    <div className="flex flex-col items-center">
+                      <Link to="/schedule">
+                        <Button size="lg" className="flex items-center gap-2">
+                          <Calendar className="w-5 h-5" />
+                          Schedule Appointment
+                        </Button>
+                      </Link>
+                      <p className="text-sm text-muted-foreground mt-2">$150 per visit</p>
+                    </div>
                     <Link to="/intake">
                       <Button variant="outline" size="lg" className="flex items-center gap-2">
                         <User className="w-5 h-5" />
